@@ -22,6 +22,22 @@ namespace CasaDoCodigo.Repositories
             return dbSet.Include(p=>p.Categoria).ToList();
         }
 
+        public IList<Produto> GetProdutos(string pesquisa)
+        {
+            //Se pesquisa vazia retorna todos os produtos
+            if (string.IsNullOrEmpty(pesquisa))
+            {
+                return GetProdutos();
+            }
+            var consulta = dbSet.Include(p => p.Categoria).Where(p => p.Nome.Contains(pesquisa) || p.Categoria.Nome.Contains(pesquisa)).ToList();
+            //Se pesquisa não retornou nada, retorna todos os produtos
+            if (consulta.Count==0)
+            {
+                return GetProdutos();
+            }
+            return consulta;
+        }
+
         public async Task SaveProdutos(List<Livro> livros)
         {
             foreach (var livro in livros)
